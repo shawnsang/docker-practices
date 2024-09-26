@@ -27,7 +27,7 @@ services:
       DATABASE_USER: traccaruser
       DATABASE_PASSWORD: traccarpassword
     ports:
-      - "8082:8088"
+      - "8088:8082"
     volumes:
       - traccar_data:/opt/traccar:z  # Use :z for SELinux compatibility in Podman
     networks:
