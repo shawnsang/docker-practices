@@ -1,0 +1,41 @@
+version: '3'
+# this is for podman
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: traccar-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: traccar
+      MYSQL_USER: traccaruser
+      MYSQL_PASSWORD: traccarpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql:z  # Use :z for SELinux compatibility in Podman
+    networks:
+      - traccar-network
+
+  traccar:
+    image: traccar/traccar:latest
+    container_name: traccar-server
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_DRIVER: com.mysql.cj.jdbc.Driver
+      DATABASE_URL: jdbc:mysql://mysql:3306/traccar
+      DATABASE_USER: traccaruser
+      DATABASE_PASSWORD: traccarpassword
+    ports:
+      - "8082:8088"
+    volumes:
+      - traccar_data:/opt/traccar:z  # Use :z for SELinux compatibility in Podman
+    networks:
+      - traccar-network
+
+volumes:
+  mysql_data:
+  traccar_data:
+
+networks:
+  traccar-network:
